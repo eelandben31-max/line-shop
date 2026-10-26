@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>精選商城 & 推薦專區</title>
+  <title>桑好樣精選商城 & 推薦專區</title>
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f7f7f7; margin: 0; padding: 15px; color: #333; }
-    .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    h2, h3 { margin-top: 0; }
-    .product-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; padding: 12px 0; }
-    .btn { background: #06C755; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    .btn-share { background: #1877F2; width: 100%; padding: 12px; margin-top: 10px; font-size: 15px; }
-    .badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background-color: #f7f9fa; color: #333; }
+    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    h2, h3 { margin-top: 0; color: #111; }
+    .btn { display: inline-block; width: 100%; box-sizing: border-box; background: #06C755; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; text-align: center; }
+    .btn-share { background: #007aff; margin-top: 10px; }
+    .product-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 16px 0; }
+    .product-item:last-child { border-bottom: none; }
+    .badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -21,7 +22,7 @@
   <!-- 用戶與推薦人狀態 -->
   <div class="card">
     <h3 id="userGreeting">載入中...</h3>
-    <p id="referrerInfo" style="font-size: 14px; color: #666;"></p>
+    <p id="refInfo" style="font-size: 14px; color: #666;"></p>
     <button class="btn btn-share" onclick="copyMyReferralLink()">📋 複製桑好樣專屬推薦連結</button>
   </div>
 
@@ -31,10 +32,10 @@
     
     <div class="product-item">
       <div>
-        <div style="font-weight: bold;">郝董事長年終尊榮精選體驗組</div>
+        <div style="font-weight: bold;">董事長年終尊榮精選體驗組</div>
         <div style="color: #e53935; font-weight: bold;">NT$ 1,200 <span class="badge">分潤 10%</span></div>
       </div>
-      <button class="btn" onclick="submitOrder('郝董事長年終尊榮精選體驗組', 1200)">立即預訂</button>
+      <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('董事長年終尊榮精選體驗組', 1200)">立即預訂</button>
     </div>
 
     <div class="product-item">
@@ -42,7 +43,7 @@
         <div style="font-weight: bold;">桑好樣年度旗艦套餐一條龍</div>
         <div style="color: #e53935; font-weight: bold;">NT$ 3,600 <span class="badge">分潤 10%</span></div>
       </div>
-      <button class="btn" onclick="submitOrder('桑好樣年度旗艦套餐一條龍', 3600)">立即預訂</button>
+      <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('桑好樣年度旗艦套餐一條龍', 3600)">立即預訂</button>
     </div>
   </div>
 
@@ -51,7 +52,7 @@
     const LIFF_ID = "2012228111-I5468Lal";
     const SUPABASE_URL = "https://ughhbhgtfabuelefraou.supabase.co";
     const SUPABASE_KEY = "sb_publishable_SGy0h-8SpjO9T5z6Y3qHXw__WkSg0WD";
-    const LINE_ACCESS_TOKEN = "8xVh+ovOX7yjNkg7MAhnHLbni9KtkE2DAGV2NA15z6h7MH56N6Qfh4eJub4JhIT8bwkgfr9BLxE+tUCLUcW+Nd3i+w+u4oqOvqMKbpqZ1ZR61emkkpm7RbYp7TFgfoM60YY4CLivZQWa3fETJW2ooQdB04t89/1O/w1cDnyilFU=";
+    const LINE_ACCESS_TOKEN = "8xVh+ovOX7yjNkg7MAhnHLbni9KtkE2DAGV2NA15z6H7MH56N6Qfh4eJub4jHIt8bwkgfr9BLxE+tUCLUcw+Nd3i+w+u4oqOvqMKbpqZ1ZR61emkkpm7RbYp7TFgfoM60YY4CLivZQWa3fETJW2ooQdB04t89/10/w1cDnyi1FU=";
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
@@ -72,64 +73,63 @@
       const urlParams = new URLSearchParams(window.location.search);
       const referrerId = urlParams.get('ref');
 
-      // 檢查推薦關係並寫入資料庫
       if (referrerId && referrerId !== profile.userId) {
-        document.getElementById('referrerInfo').innerText = `✨ 推薦人代號：${referrerId.slice(0, 8)}...`;
-      } else {
-        document.getElementById('referrerInfo').innerText = "歡迎直接加入我們的官方服務！";
+        document.getElementById('refInfo').innerText = `已鎖定推薦人獎勵綁定`;
       }
 
+      // 登錄或更新會員資料
       await supabaseClient.from('users').upsert({
         line_user_id: profile.userId,
         display_name: profile.displayName,
         referrer_id: (referrerId && referrerId !== profile.userId) ? referrerId : null
-      }, { onConflict: 'line_user_id', ignoreDuplicates: true });
+      });
     }
 
-    // 複製自己的邀請連結
+    // 複製推薦連結
     function copyMyReferralLink() {
       if (!currentUser) return;
       const shareUrl = `https://liff.line.me/${LIFF_ID}?ref=${currentUser.userId}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("專屬推薦連結已複製！發給朋友即可綁定推薦關係：\n" + shareUrl);
+        alert("專屬推薦連結已複製！發給朋友即可享有分潤！\n" + shareUrl);
       });
     }
 
-    // 模擬下單並自動計算分潤推播
+    // 下單並觸發推播
     async function submitOrder(productName, price) {
-      if (!confirm(`確定要預訂【${productName}】嗎？`)) return;
+      if (!currentUser) return;
 
-      const orderNo = "ORD" + Date.now();
+      const confirmBuy = confirm(`確定要預訂【${productName}】（NT$ ${price}）嗎？`);
+      if (!confirmBuy) return;
 
-      // 1. 寫入訂單
-      const { data: orderData } = await supabaseClient.from('orders').insert({
-        order_number: orderNo,
-        buyer_line_id: currentUser.userId,
-        total_amount: price,
-        status: 'paid'
-      }).select().single();
-
-      // 2. 查推薦人並算分潤
+      // 查詢當前用戶綁定的推薦人
       const { data: userData } = await supabaseClient
         .from('users')
         .select('referrer_id')
         .eq('line_user_id', currentUser.userId)
         .single();
 
-      const referrerId = userData?.referrer_id;
+      const finalReferrerId = userData ? userData.referrer_id : null;
 
-      if (referrerId) {
-        const commissionAmount = Math.round(price * 0.1); // 10% 分潤
+      // 1. 寫入訂單
+      await supabaseClient.from('orders').insert({
+        buyer_id: currentUser.userId,
+        buyer_name: currentUser.displayName,
+        product_name: productName,
+        amount: price,
+        referrer_id: finalReferrerId
+      });
 
-        // 寫入分潤紀錄
+      // 2. 若有推薦人，寫入 10% 分潤並推播通知
+      if (finalReferrerId) {
+        const bonus = Math.round(price * 0.1);
         await supabaseClient.from('commissions').insert({
-          order_id: orderData.id,
-          referrer_id: referrerId,
-          commission_amount: commissionAmount,
-          is_settled: false
+          referrer_id: finalReferrerId,
+          buyer_id: currentUser.userId,
+          amount: bonus,
+          status: 'pending'
         });
 
-        // 呼叫 LINE 推播給推薦人
+        // 發送 LINE 推播給推薦人
         try {
           await fetch('https://api.line.me/v2/bot/message/push', {
             method: 'POST',
@@ -138,10 +138,10 @@
               'Authorization': `Bearer ${LINE_ACCESS_TOKEN}`
             },
             body: JSON.stringify({
-              to: referrerId,
+              to: finalReferrerId,
               messages: [{
                 type: 'text',
-                text: `🎉 好消息！您推薦的顧客【${currentUser.displayName}】已完成預訂【${productName}】！\n獲得分潤：NT$ ${commissionAmount} 元！`
+                text: `🎉【桑好樣分潤入帳】\n恭喜！好友 ${currentUser.displayName} 剛預訂了【${productName}】。\n您已獲得預計分潤：NT$ ${bonus} 元！`
               }]
             })
           });
@@ -150,8 +150,7 @@
         }
       }
 
-      alert("預訂成功！我們會盡快與您聯絡。");
-      liff.closeWindow(); // 關閉 LINE 內頁視窗
+      alert("預訂成功！已將明細傳送至系統！");
     }
 
     initApp();
