@@ -7,14 +7,90 @@
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background-color: #f7f9fa; color: #333; }
-    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    /* 全站背景 */
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      margin: 0; 
+      padding: 20px; 
+      background-color: #f4f6f8;
+      background-image: linear-gradient(rgba(244, 246, 248, 0.90), rgba(244, 246, 248, 0.90)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #333; 
+    }
+    .card { 
+      background: rgba(255, 255, 255, 0.96); 
+      backdrop-filter: blur(10px);
+      border-radius: 14px; 
+      padding: 20px; 
+      margin-bottom: 20px; 
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06); 
+    }
     h2, h3 { margin-top: 0; color: #111; }
-    .btn { display: inline-block; width: 100%; box-sizing: border-box; background: #06C755; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; text-align: center; }
+    .btn { 
+      display: inline-block; 
+      width: 100%; 
+      box-sizing: border-box; 
+      background: #06C755; 
+      color: white; 
+      border: none; 
+      padding: 12px; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      font-size: 16px; 
+      cursor: pointer; 
+      text-align: center; 
+    }
     .btn-share { background: #007aff; margin-top: 10px; }
-    .product-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 16px 0; }
-    .product-item:last-child { border-bottom: none; }
-    .badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    
+    /* 商品外框與媒體展示 */
+    .product-box {
+      border: 1px solid #ebebeb;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 比例 */
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .product-img {
+      width: 100%;
+      max-height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+    .product-content {
+      padding: 14px;
+    }
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .badge { 
+      background: #e8f5e9; 
+      color: #2e7d32; 
+      padding: 4px 8px; 
+      border-radius: 4px; 
+      font-size: 12px; 
+      font-weight: bold; 
+    }
   </style>
 </head>
 <body>
@@ -30,21 +106,43 @@
   <div class="card">
     <h3>🔥 桑好樣精選熱賣商品</h3>
     
-    <div class="product-item">
-      <div>
-        <div style="font-weight: bold;">董事長年終尊榮精選體驗組</div>
-        <div style="color: #e53935; font-weight: bold;">NT$ 1,200 <span class="badge">分潤 10%</span></div>
+    <!-- 商品 1：董事長年終尊榮精選體驗組（放 YouTube 影片） -->
+    <div class="product-box">
+      <div class="video-container">
+        <iframe 
+          src="https://www.youtube.com/embed/dar7A4GWE6w" 
+          title="董事長年終尊榮精選體驗組 介紹影片" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
       </div>
-      <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('董事長年終尊榮精選體驗組', 1200)">立即預訂</button>
+      <div class="product-content">
+        <div style="font-weight: bold; font-size: 16px;">董事長年終尊榮精選體驗組</div>
+        <div style="font-size: 13px; color: #777; margin-top: 4px;">直達深處舒緩緊繃，極致尊榮配方首選</div>
+        <div class="product-footer">
+          <div style="color: #e53935; font-weight: bold; font-size: 16px;">
+            NT$ 1,200 <span class="badge">分潤 10%</span>
+          </div>
+          <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('董事長年終尊榮精選體驗組', 1200)">立即預訂</button>
+        </div>
+      </div>
     </div>
 
-    <div class="product-item">
-      <div>
-        <div style="font-weight: bold;">桑好樣年度旗艦套餐一條龍</div>
-        <div style="color: #e53935; font-weight: bold;">NT$ 3,600 <span class="badge">分潤 10%</span></div>
+    <!-- 商品 2：桑好樣年度旗艦套餐一條龍（放 Postimage 圖片） -->
+    <div class="product-box">
+      <img class="product-img" src="https://i.postimg.cc/nzyyvDj9/794506175-1793005954831789.jpg" alt="桑好樣年度旗艦套餐一條龍">
+      <div class="product-content">
+        <div style="font-weight: bold; font-size: 16px;">桑好樣年度旗艦套餐一條龍</div>
+        <div style="font-size: 13px; color: #777; margin-top: 4px;">全套尊榮諮詢與調理方案，完整專屬禮遇</div>
+        <div class="product-footer">
+          <div style="color: #e53935; font-weight: bold; font-size: 16px;">
+            NT$ 3,600 <span class="badge">分潤 10%</span>
+          </div>
+          <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('桑好樣年度旗艦套餐一條龍', 3600)">立即預訂</button>
+        </div>
       </div>
-      <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('桑好樣年度旗艦套餐一條龍', 3600)">立即預訂</button>
     </div>
+
   </div>
 
   <script>
