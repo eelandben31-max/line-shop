@@ -42,7 +42,11 @@
       cursor: pointer; 
       text-align: center; 
     }
-    .btn-share { background: #007aff; margin-top: 10px; }
+    .btn-share { 
+      background: linear-gradient(135deg, #007aff, #00c6ff); 
+      margin-top: 10px; 
+      box-shadow: 0 4px 12px rgba(0,122,255,0.25);
+    }
     
     /* 商品外框與媒體展示 */
     .product-box {
@@ -99,14 +103,15 @@
   <div class="card">
     <h3 id="userGreeting">載入中...</h3>
     <p id="refInfo" style="font-size: 14px; color: #666;"></p>
-    <button class="btn btn-share" onclick="copyMyReferralLink()">📋 複製桑好樣專屬推薦連結</button>
+    <!-- 一鍵發送精美卡片按鈕 -->
+    <button class="btn btn-share" onclick="shareFlexCard()">🎁 分享專屬推薦卡片給好友</button>
   </div>
 
   <!-- 精選商品展示區 -->
   <div class="card">
     <h3>🔥 桑好樣精選熱賣商品</h3>
     
-    <!-- 商品 1：董事長年終尊榮精選體驗組（放 YouTube 影片） -->
+    <!-- 商品 1：董事長年終尊榮精選體驗組（YouTube 影片） -->
     <div class="product-box">
       <div class="video-container">
         <iframe 
@@ -128,7 +133,7 @@
       </div>
     </div>
 
-    <!-- 商品 2：桑好樣年度旗艦套餐一條龍（放 Postimage 圖片） -->
+    <!-- 商品 2：桑好樣年度旗艦套餐一條龍（圖片） -->
     <div class="product-box">
       <img class="product-img" src="https://i.postimg.cc/nzyyvDj9/794506175-1793005954831789.jpg" alt="桑好樣年度旗艦套餐一條龍">
       <div class="product-content">
@@ -183,13 +188,84 @@
       });
     }
 
-    // 複製推薦連結
-    function copyMyReferralLink() {
+    // 發送 Flex 輪播精美卡片給 LINE 好友
+    async function shareFlexCard() {
       if (!currentUser) return;
       const shareUrl = `https://liff.line.me/${LIFF_ID}?ref=${currentUser.userId}`;
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("專屬推薦連結已複製！發給朋友即可享有分潤！\n" + shareUrl);
-      });
+
+      // 檢查是否支援 LINE 內部好友選擇器
+      if (!liff.isApiAvailable('shareTargetPicker')) {
+        // 若在一般電腦瀏覽器打開，退回複製連結
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          alert("專屬推薦連結已複製：\n" + shareUrl);
+        });
+        return;
+      }
+
+      try {
+        const res = await liff.shareTargetPicker([
+          {
+            type: "flex",
+            altText: `${currentUser.displayName} 邀請您體驗【桑好樣精選商城】`,
+            contents: {
+              type: "bubble",
+              hero: {
+                type: "image",
+                url: "https://i.postimg.cc/nzyyvDj9/794506175-1793005954831789.jpg",
+                size: "full",
+                aspectRatio: "20:13",
+                aspectMode: "cover"
+              },
+              body: {
+                type: "box",
+                layout: "vertical",
+                contents: [
+                  {
+                    type: "text",
+                    text: "桑好樣精選商城",
+                    weight: "bold",
+                    size: "xl",
+                    color: "#111111"
+                  },
+                  {
+                    type: "text",
+                    text: `來自好友「${currentUser.displayName}」的專屬推薦！直達深處舒緩緊繃，極致尊榮配方首選。`,
+                    size: "sm",
+                    color: "#666666",
+                    wrap: true,
+                    margin: "md"
+                  }
+                ]
+              },
+              footer: {
+                type: "box",
+                layout: "vertical",
+                contents: [
+                  {
+                    type: "button",
+                    action: {
+                      type: "uri",
+                      label: "👉 立即前往選購",
+                      uri: shareUrl
+                    },
+                    style: "primary",
+                    color: "#06C755"
+                  }
+                ]
+              }
+            }
+          }
+        ]);
+
+        if (res) {
+          alert("🎉 專屬推薦卡片已成功分享給好友！");
+        }
+      } catch (error) {
+        console.error("卡片分享失敗", error);
+        // 如果使用者中途取消，或權限未開啟時的備案
+        navigator.clipboard.writeText(shareUrl);
+        alert("已複製推薦連結到剪貼簿，可以直接貼上傳給好友！");
+      }
     }
 
     // 下單並觸發推播
