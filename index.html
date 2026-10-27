@@ -7,13 +7,12 @@
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* 全站背景 */
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
       margin: 0; 
-      padding: 20px; 
+      padding: 16px; 
       background-color: #f4f6f8;
-      background-image: linear-gradient(rgba(244, 246, 248, 0.90), rgba(244, 246, 248, 0.90)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80');
+      background-image: linear-gradient(rgba(244, 246, 248, 0.92), rgba(244, 246, 248, 0.92)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -23,9 +22,9 @@
       background: rgba(255, 255, 255, 0.96); 
       backdrop-filter: blur(10px);
       border-radius: 14px; 
-      padding: 20px; 
-      margin-bottom: 20px; 
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06); 
+      padding: 16px; 
+      margin-bottom: 16px; 
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06); 
     }
     h2, h3 { margin-top: 0; color: #111; }
     .btn { 
@@ -38,7 +37,7 @@
       padding: 12px; 
       border-radius: 8px; 
       font-weight: bold; 
-      font-size: 16px; 
+      font-size: 15px; 
       cursor: pointer; 
       text-align: center; 
     }
@@ -47,19 +46,16 @@
       margin-top: 10px; 
       box-shadow: 0 4px 12px rgba(0,122,255,0.25);
     }
-    
-    /* 商品外框與媒體展示 */
     .product-box {
       border: 1px solid #ebebeb;
       border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       background: #fff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
     }
     .video-container {
       position: relative;
-      padding-bottom: 56.25%; /* 16:9 比例 */
+      padding-bottom: 56.25%;
       height: 0;
       overflow: hidden;
       background: #000;
@@ -74,7 +70,7 @@
     }
     .product-img {
       width: 100%;
-      max-height: 240px;
+      max-height: 220px;
       object-fit: cover;
       display: block;
     }
@@ -95,6 +91,44 @@
       font-size: 12px; 
       font-weight: bold; 
     }
+
+    /* 下單彈跳視窗 Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .modal-sheet {
+      background: #ffffff;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px;
+      box-sizing: border-box;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #444; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .btn-cancel { background: #e0e0e0; color: #333; }
   </style>
 </head>
 <body>
@@ -103,15 +137,14 @@
   <div class="card">
     <h3 id="userGreeting">載入中...</h3>
     <p id="refInfo" style="font-size: 14px; color: #666;"></p>
-    <!-- 一鍵發送精美卡片按鈕 -->
     <button class="btn btn-share" onclick="shareFlexCard()">🎁 分享專屬推薦卡片給好友</button>
   </div>
 
   <!-- 精選商品展示區 -->
   <div class="card">
-    <h3>🔥 桑好樣精選熱賣商品</h3>
+    <h3>🔥 桑好樣精選商品</h3>
     
-    <!-- 商品 1：董事長年終尊榮精選體驗組（YouTube 影片） -->
+    <!-- 商品 1：董事長年終尊榮精選體驗組 -->
     <div class="product-box">
       <div class="video-container">
         <iframe 
@@ -128,12 +161,12 @@
           <div style="color: #e53935; font-weight: bold; font-size: 16px;">
             NT$ 1,200 <span class="badge">分潤 10%</span>
           </div>
-          <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('董事長年終尊榮精選體驗組', 1200)">立即預訂</button>
+          <button class="btn" style="width: auto; padding: 8px 16px;" onclick="openCheckoutModal('董事長年終尊榮精選體驗組', 1200)">立即下單</button>
         </div>
       </div>
     </div>
 
-    <!-- 商品 2：桑好樣年度旗艦套餐一條龍（圖片） -->
+    <!-- 商品 2：桑好樣年度旗艦套餐一條龍 -->
     <div class="product-box">
       <img class="product-img" src="https://i.postimg.cc/nzyyvDj9/794506175-1793005954831789.jpg" alt="桑好樣年度旗艦套餐一條龍">
       <div class="product-content">
@@ -143,22 +176,69 @@
           <div style="color: #e53935; font-weight: bold; font-size: 16px;">
             NT$ 3,600 <span class="badge">分潤 10%</span>
           </div>
-          <button class="btn" style="width: auto; padding: 8px 16px;" onclick="submitOrder('桑好樣年度旗艦套餐一條龍', 3600)">立即預訂</button>
+          <button class="btn" style="width: auto; padding: 8px 16px;" onclick="openCheckoutModal('桑好樣年度旗艦套餐一條龍', 3600)">立即下單</button>
         </div>
       </div>
     </div>
+  </div>
 
+  <!-- 下單表單彈窗（含信箱欄位） -->
+  <div id="checkoutModal" class="modal-overlay">
+    <div class="modal-sheet">
+      <h3 style="margin-bottom: 12px;" id="modalProductTitle">填寫收件與下單資料</h3>
+      
+      <div class="form-group">
+        <label>收件人姓名 *</label>
+        <input type="text" id="orderName" placeholder="請輸入真實姓名">
+      </div>
+
+      <div class="form-group">
+        <label>聯絡電話 *</label>
+        <input type="tel" id="orderPhone" placeholder="例如：0912345678">
+      </div>
+
+      <div class="form-group">
+        <label>電子信箱 *</label>
+        <input type="email" id="orderEmail" placeholder="例如：example@gmail.com">
+      </div>
+
+      <div class="form-group">
+        <label>收件地址 / 7-11取貨門市 *</label>
+        <input type="text" id="orderAddress" placeholder="請輸入完整寄送地址或超商門市">
+      </div>
+
+      <div class="form-group">
+        <label>付款方式 *</label>
+        <select id="orderPayment">
+          <option value="貨到付款">貨到付款</option>
+          <option value="銀行轉帳/匯款">銀行轉帳 / 匯款</option>
+          <option value="面交付款">面交付款</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>備註事項</label>
+        <textarea id="orderNote" rows="2" placeholder="方便收件時間或特殊需求"></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeCheckoutModal()">取消</button>
+        <button class="btn" id="submitOrderBtn" onclick="confirmSubmitOrder()">確認送出訂單</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // 系統憑證配置
     const LIFF_ID = "2012228111-I5468Lal";
     const SUPABASE_URL = "https://ughhbhgtfabuelefraou.supabase.co";
     const SUPABASE_KEY = "sb_publishable_SGy0h-8SpjO9T5z6Y3qHXw__WkSg0WD";
     const LINE_ACCESS_TOKEN = "8xVh+ovOX7yjNkg7MAhnHLbni9KtkE2DAGV2NA15z6H7MH56N6Qfh4eJub4jHIt8bwkgfr9BLxE+tUCLUcw+Nd3i+w+u4oqOvqMKbpqZ1ZR61emkkpm7RbYp7TFgfoM60YY4CLivZQWa3fETJW2ooQdB04t89/10/w1cDnyi1FU=";
+    // 已替換為你的最新 GAS Web 應用程式網址
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzBFKg7O2SKJeUgJyJUbO5zRT1earMk-V3tbCW_7YwwJNTeQK9d9603HhUE3RwGfj7D/exec";
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
+    let selectedProduct = { name: '', price: 0 };
 
     async function initApp() {
       await liff.init({ liffId: LIFF_ID });
@@ -172,7 +252,6 @@
       currentUser = profile;
       document.getElementById('userGreeting').innerText = `您好，${profile.displayName}！`;
 
-      // 取得推薦人參數 (?ref=xxxx)
       const urlParams = new URLSearchParams(window.location.search);
       const referrerId = urlParams.get('ref');
 
@@ -180,7 +259,6 @@
         document.getElementById('refInfo').innerText = `已鎖定推薦人獎勵綁定`;
       }
 
-      // 登錄或更新會員資料
       await supabaseClient.from('users').upsert({
         line_user_id: profile.userId,
         display_name: profile.displayName,
@@ -188,14 +266,125 @@
       });
     }
 
-    // 發送 Flex 輪播精美卡片給 LINE 好友
+    function openCheckoutModal(name, price) {
+      selectedProduct = { name, price };
+      document.getElementById('modalProductTitle').innerText = `訂購：${name} (NT$ ${price})`;
+      if (currentUser) {
+        document.getElementById('orderName').value = currentUser.displayName || '';
+      }
+      document.getElementById('checkoutModal').style.display = 'flex';
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').style.display = 'none';
+    }
+
+    async function confirmSubmitOrder() {
+      const name = document.getElementById('orderName').value.trim();
+      const phone = document.getElementById('orderPhone').value.trim();
+      const email = document.getElementById('orderEmail').value.trim();
+      const address = document.getElementById('orderAddress').value.trim();
+      const payment = document.getElementById('orderPayment').value;
+      const note = document.getElementById('orderNote').value.trim();
+
+      if (!name || !phone || !email || !address) {
+        alert("請完整填寫姓名、電話、電子信箱及收件地址！");
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitOrderBtn');
+      submitBtn.innerText = "下單處理中...";
+      submitBtn.disabled = true;
+
+      try {
+        // 1. 同步送出至全新 Google 試算表（標記為 LINE官方商城）
+        const orderPayload = {
+          source: "LINE官方商城",
+          productName: selectedProduct.name,
+          amount: selectedProduct.price,
+          name: name,
+          phone: phone,
+          email: email,
+          address: address,
+          payment: payment,
+          note: note,
+          lineUserId: currentUser ? currentUser.userId : ""
+        };
+
+        fetch(GAS_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload)
+        });
+
+        // 2. 查詢推薦人並寫入 Supabase
+        const { data: userData } = await supabaseClient
+          .from('users')
+          .select('referrer_id')
+          .eq('line_user_id', currentUser.userId)
+          .single();
+
+        const finalReferrerId = userData ? userData.referrer_id : null;
+
+        await supabaseClient.from('orders').insert({
+          buyer_id: currentUser.userId,
+          buyer_name: name,
+          product_name: selectedProduct.name,
+          amount: selectedProduct.price,
+          phone: phone,
+          address: address,
+          payment_method: payment,
+          note: `信箱:${email} | ${note}`,
+          referrer_id: finalReferrerId,
+          status: '待處理'
+        });
+
+        // 3. 若有推薦人，寫入分潤並推播
+        if (finalReferrerId) {
+          const bonus = Math.round(selectedProduct.price * 0.1);
+          await supabaseClient.from('commissions').insert({
+            referrer_id: finalReferrerId,
+            buyer_id: currentUser.userId,
+            amount: bonus,
+            status: 'pending'
+          });
+
+          await fetch('https://api.line.me/v2/bot/message/push', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${LINE_ACCESS_TOKEN}`
+            },
+            body: JSON.stringify({
+              to: finalReferrerId,
+              messages: [{
+                type: 'text',
+                text: `🎉【桑好樣分潤入帳】\n恭喜！好友 ${name} 剛訂購了【${selectedProduct.name}】。\n您已獲得預計分潤：NT$ ${bonus} 元！`
+              }]
+            })
+          });
+        }
+
+        alert("🎉 訂單已送出成功！已同步發送明細至 LINE 並記錄於 Google 試算表！");
+        closeCheckoutModal();
+        if (liff.isInClient()) {
+          liff.closeWindow();
+        }
+      } catch (err) {
+        console.error("下單失敗", err);
+        alert("下單失敗，請稍後再試！");
+      } finally {
+        submitBtn.innerText = "確認送出訂單";
+        submitBtn.disabled = false;
+      }
+    }
+
     async function shareFlexCard() {
       if (!currentUser) return;
       const shareUrl = `https://liff.line.me/${LIFF_ID}?ref=${currentUser.userId}`;
 
-      // 檢查是否支援 LINE 內部好友選擇器
       if (!liff.isApiAvailable('shareTargetPicker')) {
-        // 若在一般電腦瀏覽器打開，退回複製連結
         navigator.clipboard.writeText(shareUrl).then(() => {
           alert("專屬推薦連結已複製：\n" + shareUrl);
         });
@@ -229,7 +418,7 @@
                   },
                   {
                     type: "text",
-                    text: `來自好友「${currentUser.displayName}」的專屬推薦！直達深處舒緩緊繃，極致尊榮配方首選。`,
+                    text: `好友「${currentUser.displayName}」特別推薦！點擊下方按鈕即可線上填單下單。`,
                     size: "sm",
                     color: "#666666",
                     wrap: true,
@@ -245,7 +434,7 @@
                     type: "button",
                     action: {
                       type: "uri",
-                      label: "👉 立即前往選購",
+                      label: "👉 立即線上預訂下單",
                       uri: shareUrl
                     },
                     style: "primary",
@@ -256,75 +445,12 @@
             }
           }
         ]);
-
-        if (res) {
-          alert("🎉 專屬推薦卡片已成功分享給好友！");
-        }
+        if (res) alert("🎉 專屬推薦卡片已成功分享給好友！");
       } catch (error) {
-        console.error("卡片分享失敗", error);
-        // 如果使用者中途取消，或權限未開啟時的備案
+        console.error("分享失敗", error);
         navigator.clipboard.writeText(shareUrl);
-        alert("已複製推薦連結到剪貼簿，可以直接貼上傳給好友！");
+        alert("已複製推薦連結到剪貼簿！");
       }
-    }
-
-    // 下單並觸發推播
-    async function submitOrder(productName, price) {
-      if (!currentUser) return;
-
-      const confirmBuy = confirm(`確定要預訂【${productName}】（NT$ ${price}）嗎？`);
-      if (!confirmBuy) return;
-
-      // 查詢當前用戶綁定的推薦人
-      const { data: userData } = await supabaseClient
-        .from('users')
-        .select('referrer_id')
-        .eq('line_user_id', currentUser.userId)
-        .single();
-
-      const finalReferrerId = userData ? userData.referrer_id : null;
-
-      // 1. 寫入訂單
-      await supabaseClient.from('orders').insert({
-        buyer_id: currentUser.userId,
-        buyer_name: currentUser.displayName,
-        product_name: productName,
-        amount: price,
-        referrer_id: finalReferrerId
-      });
-
-      // 2. 若有推薦人，寫入 10% 分潤並推播通知
-      if (finalReferrerId) {
-        const bonus = Math.round(price * 0.1);
-        await supabaseClient.from('commissions').insert({
-          referrer_id: finalReferrerId,
-          buyer_id: currentUser.userId,
-          amount: bonus,
-          status: 'pending'
-        });
-
-        // 發送 LINE 推播給推薦人
-        try {
-          await fetch('https://api.line.me/v2/bot/message/push', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${LINE_ACCESS_TOKEN}`
-            },
-            body: JSON.stringify({
-              to: finalReferrerId,
-              messages: [{
-                type: 'text',
-                text: `🎉【桑好樣分潤入帳】\n恭喜！好友 ${currentUser.displayName} 剛預訂了【${productName}】。\n您已獲得預計分潤：NT$ ${bonus} 元！`
-              }]
-            })
-          });
-        } catch (e) {
-          console.error("推播發送失敗", e);
-        }
-      }
-
-      alert("預訂成功！已將明細傳送至系統！");
     }
 
     initApp();
