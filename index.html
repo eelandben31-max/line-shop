@@ -233,7 +233,6 @@
     const SUPABASE_URL = "https://ughhbhgtfabuelefraou.supabase.co";
     const SUPABASE_KEY = "sb_publishable_SGy0h-8SpjO9T5z6Y3qHXw__WkSg0WD";
     const LINE_ACCESS_TOKEN = "8xVh+ovOX7yjNkg7MAhnHLbni9KtkE2DAGV2NA15z6H7MH56N6Qfh4eJub4jHIt8bwkgfr9BLxE+tUCLUcw+Nd3i+w+u4oqOvqMKbpqZ1ZR61emkkpm7RbYp7TFgfoM60YY4CLivZQWa3fETJW2ooQdB04t89/10/w1cDnyi1FU=";
-    // 已替換為你的最新 GAS Web 應用程式網址
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzBFKg7O2SKJeUgJyJUbO5zRT1earMk-V3tbCW_7YwwJNTeQK9d9603HhUE3RwGfj7D/exec";
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -297,7 +296,7 @@
       submitBtn.disabled = true;
 
       try {
-        // 1. 同步送出至全新 Google 試算表（標記為 LINE官方商城）
+        // 1. 同步送出至 Google 試算表（標記為 LINE官方商城）
         const orderPayload = {
           source: "LINE官方商城",
           productName: selectedProduct.name,
@@ -380,6 +379,7 @@
       }
     }
 
+    // 好友分享 Flex 卡片（已更新為指定海報圖）
     async function shareFlexCard() {
       if (!currentUser) return;
       const shareUrl = `https://liff.line.me/${LIFF_ID}?ref=${currentUser.userId}`;
@@ -400,7 +400,7 @@
               type: "bubble",
               hero: {
                 type: "image",
-                url: "https://i.postimg.cc/nzyyvDj9/794506175-1793005954831789.jpg",
+                url: "https://i.postimg.cc/4ygj9Dyj/S-19709976.jpg",
                 size: "full",
                 aspectRatio: "20:13",
                 aspectMode: "cover"
